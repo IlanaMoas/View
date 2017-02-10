@@ -1,24 +1,33 @@
 package view;
 
 import java.io.File;
+import java.nio.file.Paths;
 //import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Observable;
 
+import com.sun.medialib.mlib.Image;
+
+import java.util.ArrayList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.TilePane;
 import javafx.stage.*;
+import model.data.Element;
 
 public class MainWindowController extends Observable implements View{
-	private LinkedList<String> args;
+	private LinkedList<String> args = new LinkedList<String>();
+
 	@FXML
-	private TitledPane root;
+	private AnchorPane root;
 	@FXML
 	private Menu fileMenu;
 	@FXML
@@ -28,20 +37,22 @@ public class MainWindowController extends Observable implements View{
 	@FXML
 	private Menu levelMenu;
 	@FXML
-	private Menu closeLevelButton;
+	private MenuItem closeLevelButton;
 	@FXML
 	private Button closeProgramButton;
-	
+	@FXML
+	private Canvas grid;
 
-	public MainWindowController(){
-		args = new LinkedList<String>();
-	}
-	
+
+	//	public MainWindowController(){
+	//		args = new LinkedList<String>();
+	//	}
+
 	@FXML
 	public void closeProgram(){
 		args.add("Exit");
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
 
 	@FXML
@@ -66,38 +77,19 @@ public class MainWindowController extends Observable implements View{
 		}
 	}
 
-	//	public void openLoadLevelSysWindow(){
-	//		
-	//		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("LoadLevelFxmlFile.fxml"));
-	//		Parent root = null;
-	//		try {
-	//			root = fxmlLoader.load();
-	//			Stage stage = new Stage();
-	//			stage.initModality(Modality.APPLICATION_MODAL);
-	//			stage.setOpacity(1);
-	//			stage.setTitle("Load new level");
-	//			stage.setScene(new Scene(root, 450, 450));
-	//			
-	//			stage.showAndWait();
-	//		} catch (IOException e) {
-	//			e.printStackTrace();
-	//		}
-	//		
-	//		
-	//	}
 
 	public void loadLevel(String fileName){
 		args.add("Load");
 		args.add(fileName);
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
 
 	public void saveLevel(String fileName){
 		args.add("Load");
 		args.add(fileName);
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
 
 
@@ -106,7 +98,7 @@ public class MainWindowController extends Observable implements View{
 		args.add("Load");
 		args.add(null);
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
 
 
@@ -115,38 +107,58 @@ public class MainWindowController extends Observable implements View{
 		args.add("Move");
 		args.add("up");
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
-	
+
 	@FXML
 	public void moveDown(){
 		args.add("Move");
 		args.add("down");
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
-	
+
 	@FXML
 	public void moveLeft(){
 		args.add("Move");
 		args.add("left");
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
-	
+
 	@FXML
 	public void moveRight(){
 		args.add("Move");
 		args.add("right");
 		notifyObservers(args);
-		args.clear();
+		args = new LinkedList<String>();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void displayData(Object data) {
-		// TODO Auto-generated method stub
-
+		
+		GraphicsContext gc = grid.getGraphicsContext2D();
+		int canvasWidth = ((ArrayList<ArrayList<Element>>)data).get(0).size()*100;
+		int canvasHeight = ((ArrayList<ArrayList<Element>>)data).size()*100;
+		for (int i = 0; i < canvasHeight ; i += 100) { // 100 represents the width in pixels between each line of the grid
+			for(int j = 0 ; j < canvasWidth ; j += 100){
+//				gc.moveTo(i, j);
+				gc.drawImage(((ArrayList<ArrayList<Element>>)data).get(i).get(j).getImage(), i, j);
+			}
+		}
+		gc.save();
+//		ctx.strokeStyle = 'hsla(200, 0%, 20%, 0.8)';
+		gc.stroke();
+		gc.restore();
 	}
+
+	//	@FXML
+	//	public TitledPane getRoot(){
+	////		System.out.println(root.toString());
+	//		return root;
+	//	}
+
 
 
 }

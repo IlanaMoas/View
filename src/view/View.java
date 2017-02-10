@@ -1,8 +1,7 @@
 package view;
 
 
-
-public interface View {
+public interface View{
 	public void displayData(Object data);
 	public void loadLevel(String fileName);
 	public void saveLevel(String fileNAme);
